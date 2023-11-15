@@ -26,8 +26,9 @@ webSocket.onopen = () => {
   };
 
 webSocket.onmessage = (event) => {    
-    const data = JSON.parse(event.data)
-    console.log(data);
+    const data = JSON.parse(event.data);
+    
+    // console.log('msg' + JSON.parse(data.payload));
     if (data.type === "connection_ack") {
       webSocket.send(
         JSON.stringify(
@@ -40,13 +41,15 @@ webSocket.onmessage = (event) => {
               },
               "extensions": {},
               "operationName": "OnBarsUpdated",
-              "query": "subscription OnBarsUpdated($pairId: String!) { onBarsUpdated(pairId: $pairId) { pairAddress timestamp networkId } }", 
+              "query": "subscription OnBarsUpdated($pairId: String!) { onBarsUpdated(pairId: $pairId) { pairAddress timestamp networkId aggregates { r1 { t usd { t o h l c volume } token { t o h l c volume } } } } }", 
             }
           }
         )
       );
     } else {
       console.log("message", data);
+      console.log('payload ', data.payload);
+      console.log('aggregates ', data.payload.data.onBarsUpdated.aggregates);
     }
   };
 
